@@ -17,7 +17,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/graphql', graphqlHTTP({ schema }))
+
+// setting graphiql to true will show the graphiql client on /graphiql
+app.use('/graphql', graphqlHTTP({ schema, graphiql: true }))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

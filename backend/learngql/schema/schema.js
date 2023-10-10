@@ -2,19 +2,34 @@
  * A schema file describes the graphql types and their relations
  */
 const graphql = require('graphql');
-const { GraphQLObjectType, GraphQLString, GraphQLSchema } = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt } = graphql;
 
 const BookType = new GraphQLObjectType({
     name: 'Book',
     fields: () => ({
         id: {
-            type: GraphQLObjectType
+            type: GraphQLID
         },
         name: {
             type: GraphQLObjectType
         },
         genre: {
             type: GraphQLObjectType
+        }
+    })
+});
+
+const AuthorType = new GraphQLObjectType({
+    name: 'author',
+    fields: () => ({
+        id: {
+            type: GraphQLID
+        },
+        name: {
+            type: GraphQLObjectType
+        },
+        age: {
+            type: GraphQLInt
         }
     })
 });
@@ -29,9 +44,16 @@ const RootQuery = new GraphQLObjectType({
         // in this case, args will be of 'id'
         book: {
             type: BookType,
-            args: { id: { type: GraphQLString } },
+            args: { id: { type: GraphQLID } },
             resolve(parent, args) {
                 // this function is responsible for getting data from the database
+            }
+        },
+        author: {
+            type: AuthorType,
+            args: { id: { type: GraphQLID } },
+            resolve(parent, args) {
+
             }
         }
     }
