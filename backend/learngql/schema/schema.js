@@ -2,7 +2,7 @@
  * A schema file describes the graphql types and their relations
  */
 const graphql = require('graphql');
-const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt } = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList } = graphql;
 
 const BookType = new GraphQLObjectType({
     name: 'Book',
@@ -15,6 +15,13 @@ const BookType = new GraphQLObjectType({
         },
         genre: {
             type: GraphQLObjectType
+        },
+        author: {
+            type: AuthorType,
+            resolve(parent, args) {
+                // here we can handle the nested request
+                // the parent object will have the book object which is associated with the author
+            }
         }
     })
 });
@@ -30,6 +37,13 @@ const AuthorType = new GraphQLObjectType({
         },
         age: {
             type: GraphQLInt
+        },
+        books: {
+            // to create one to many relation between author and book
+            type: new GraphQLList(BookType),
+            resolve(parent, args) {
+
+            }
         }
     })
 });
@@ -47,6 +61,8 @@ const RootQuery = new GraphQLObjectType({
             args: { id: { type: GraphQLID } },
             resolve(parent, args) {
                 // this function is responsible for getting data from the database
+                // parent object is populated when a nested query is used and this object
+                // can be used to construct the other parts of the request
             }
         },
         author: {
