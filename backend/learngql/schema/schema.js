@@ -1,8 +1,16 @@
 /**
  * A schema file describes the graphql types and their relations
  */
+
+/**
+ * Mutations in graphql is the way to add, delete edit data 
+ */
+
+
 const graphql = require('graphql');
 const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList } = graphql;
+const Book = require('../models/book')
+const Author = require('../models/author')
 
 const BookType = new GraphQLObjectType({
     name: 'Book',
@@ -88,6 +96,65 @@ const RootQuery = new GraphQLObjectType({
     }
 })
 
+// We create an object type to handle the mutations,
+/**
+ * To execute this mutation, we have to call
+ * mutation {
+ *  addAuthor(name:"Shwan",age:23) {
+ *      name
+ *      age
+ *  }
+ * }
+ */
+const Mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+        addAuthor: {
+            type: AuthorType,
+            // args imply the data we expect to create the author
+            args: {
+                name: {
+                    type: GraphQLString
+                },
+                age: {
+                    type: GraphQLString
+                }
+            },
+            resolve(parent, args) {
+                let author = new Author({
+                    name: args.name,
+                    age: args.age
+                })
+                return author.save()
+            }
+        },
+        addBook: {
+            type: BookType,
+            // args imply the data we expect to create the author
+            args: {
+                name: {
+                    type: GraphQLString
+                },
+                genre: {
+                    type: GraphQLString
+                },
+                authorId: {
+                    type: GraphQLID
+                }
+            },
+            resolve(parent, args) {
+                let book = new Book({
+                    name: args.name,
+                    genre: args.genre,
+                    authorId: args.authorId
+                })
+                return book.save()
+            }
+        }
+    }
+})
+
 module.exports = new GraphQLSchema({
-    query: RootQuery
+    query: RootQuery,
+    mutation: Mutation
 })
