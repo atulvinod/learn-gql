@@ -1,10 +1,17 @@
+require('dotenv').config()
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const graphqlHTTP = require('express-graphql');
+const { graphqlHTTP } = require('express-graphql');
 const schema = require("./schema/schema");
+const mongoose = require('mongoose');
+
+mongoose.connect(process.env.MONGO_URL)
+  .then(_ => console.log('Database connected'))
+  .catch(err => console.log('Database error', err))
+
 
 var app = express();
 
