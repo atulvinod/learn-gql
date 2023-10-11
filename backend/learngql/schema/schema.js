@@ -29,6 +29,7 @@ const BookType = new GraphQLObjectType({
             resolve(parent, args) {
                 // here we can handle the nested request
                 // the parent object will have the book object which is associated with the author
+                return Author.findById(parent.authorId)
             }
         }
     })
@@ -50,7 +51,7 @@ const AuthorType = new GraphQLObjectType({
             // to create one to many relation between author and book
             type: new GraphQLList(BookType),
             resolve(parent, args) {
-
+                return Book.find({ authorId: parent.id })
             }
         }
     })
@@ -71,26 +72,27 @@ const RootQuery = new GraphQLObjectType({
                 // this function is responsible for getting data from the database
                 // parent object is populated when a nested query is used and this object
                 // can be used to construct the other parts of the request
+                return Book.findById(args.id)
             }
         },
         author: {
             type: AuthorType,
             args: { id: { type: GraphQLID } },
             resolve(parent, args) {
-
+                return Author.findById(args.id)
             }
         },
         // to get all books
         books: {
             type: new GraphQLList(BookType),
             resolve(parent, args) {
-
+                return Book.find({})
             }
         },
         authors: {
             type: new GraphQLList(AuthorType),
             resolve(parent, args) {
-
+                return Author.find({})
             }
         }
     }
